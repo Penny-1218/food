@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日餐食推荐器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        header {
+            background: #4e54c8;
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            position: relative;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .subtitle {
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        .content {
+            padding: 25px;
+        }
+        .meal-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-left: 5px solid #4e54c8;
+        }
+        .meal-card:hover {
+            transform: translateY(-5px);
+        }
+        .meal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .meal-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+            color: #4e54c8;
+        }
+        .meal-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+        }
+        .meal-content {
+            font-size: 1.4rem;
+            min-height: 40px;
+            padding: 12px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            color: #4a4a4a;
+        }
+        .btn-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        button {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 84, 200, 0.4);
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(78, 84, 200, 0.6);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .meal-content {
+                font-size: 1.2rem;
+            }
+            button {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>每日餐食推荐</h1>
+            <p class="subtitle">健康饮食 · 简单生活</p>
+        </header>
+        
+        <div class="content">
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-icon">🌅</div>
+                    <h2 class="meal-title">早餐</h2>
+                </div>
+                <div id="breakfast" class="meal-content">点击下方按钮获取推荐</div>
+            </div>
+            
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-icon">☀️</div>
+                    <h2 class="meal-title">午餐</h2>
+                </div>
+                <div id="lunch" class="meal-content">点击下方按钮获取推荐</div>
+            </div>
+            
+            <div class="meal-card">
+                <div class="meal-header">
+                    <div class="meal-icon">🌙</div>
+                    <h2 class="meal-title">晚餐</h2>
+                </div>
+                <div id="dinner" class="meal-content">点击下方按钮获取推荐</div>
+            </div>
+        </div>
+        
+        <div class="btn-container">
+            <button onclick="recommendMeals()">生成今日推荐</button>
+        </div>
+        
+        <footer>
+            <p>每日新推荐 · 健康好味道 | 点击按钮刷新餐单</p>
+        </footer>
+    </div>
+
+    <script>
+        // 丰富的餐食数据库
+        const meals = {
+            breakfast: [
+                "燕麦粥配蓝莓和核桃",
+                "全麦吐司配牛油果和煮鸡蛋",
+                "蔬菜鸡蛋卷配新鲜水果",
+                "希腊酸奶配蜂蜜和格兰诺拉麦片",
+                "豆浆配油条和咸菜",
+                "香蕉杏仁奶昔",
+                "紫薯粥配小菜",
+                "三文鱼菠菜蛋饼",
+                "糙米粥配肉松",
+                "全麦三明治配火腿和生菜"
+            ],
+            lunch: [
+                "番茄牛肉意面配蔬菜沙拉",
+                "鸡肉蔬菜炒饭配味噌汤",
+                "土豆炖牛肉配米饭",
+                "鲜虾蔬菜沙拉配全麦面包",
+                "韩式拌饭配泡菜",
+                "日式咖喱鸡排饭",
+                "香菇鸡丁盖浇面",
+                "清蒸鲈鱼配时蔬和糙米饭",
+                "番茄鸡蛋打卤面",
+                "泰式绿咖喱鸡配米饭"
+            ],
+            dinner: [
+                "清蒸鱼配时蔬和藜麦饭",
+                "蔬菜豆腐煲配紫薯",
+                "鸡肉蘑菇烩饭配烤蔬菜",
+                "韩式泡菜锅配乌冬面",
+                "南瓜汤配全麦面包和沙拉",
+                "低脂牛肉沙拉配烤土豆",
+                "海鲜蔬菜炒面",
+                "麻婆豆腐配米饭",
+                "蒜蓉西兰花配煎鸡胸",
+                "番茄炖牛腩配全麦馒头"
+            ]
+        };
+
+        // 随机推荐函数
+        function recommendMeals() {
+            // 添加简单的动画效果
+            const mealElements = [
+                document.getElementById('breakfast'),
+                document.getElementById('lunch'),
+                document.getElementById('dinner')
+            ];
+            
+            mealElements.forEach(el => {
+                el.style.opacity = '0.5';
+                el.style.transition = 'opacity 0.3s';
+            });
+            
+            setTimeout(() => {
+                document.getElementById('breakfast').textContent = 
+                    meals.breakfast[Math.floor(Math.random() * meals.breakfast.length)];
+                
+                document.getElementById('lunch').textContent = 
+                    meals.lunch[Math.floor(Math.random() * meals.lunch.length)];
+                
+                document.getElementById('dinner').textContent = 
+                    meals.dinner[Math.floor(Math.random() * meals.dinner.length)];
+                
+                mealElements.forEach(el => {
+                    el.style.opacity = '1';
+                });
+            }, 300);
+        }
+        
+        // 页面加载时自动生成一次推荐
+        window.onload = recommendMeals;
+    </script>
+</body>
+</html>
